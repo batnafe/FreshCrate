@@ -28,7 +28,7 @@ public class AddressRepositoryImpl implements AddressRepository {
     }
 
     @Override
-    public void updateAddress(Integer customerId, String street, String city, String zipCode, String stateId) {
+    public void updateAddress(Integer addressId, String street, String city, String zipCode, String stateId) {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder("UPDATE Address SET ");
 
@@ -51,21 +51,22 @@ public class AddressRepositoryImpl implements AddressRepository {
             params.add(zipCode);
             first = false;
         }
-        if (stateId != null) {
+
+        if (StringUtils.hasText(stateId)) {
             if (!first) sql.append(", ");
             sql.append("stateID = ?");
             params.add(stateId);
         }
 
-        sql.append(" WHERE customerId = ?");
-        params.add(customerId);
+        sql.append(" WHERE id = ?");
+        params.add(addressId);
 
         jdbcTemplate.update(sql.toString(), params.toArray());
     }
 
     @Override
     public void deleteAddress(Integer customerId) {
-        String sql = "DELETE FROM Address WHERE customerId = ?";
+        String sql = "DELETE FROM Address WHERE customerid = ?";
         jdbcTemplate.update(sql, customerId);
     }
 

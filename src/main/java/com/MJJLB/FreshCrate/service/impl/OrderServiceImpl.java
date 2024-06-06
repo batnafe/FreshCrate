@@ -18,12 +18,17 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional
     public List<OrderDetailDTO> getOrderDetails(Integer customerId,
-                                                String orderStatus,
                                                 Integer orderId,
                                                 LocalDateTime orderDate,
                                                 LocalDateTime deliveryDate) {
-        return orderRepository.getOrderDetails(customerId, orderStatus, orderId, orderDate, deliveryDate);
+        List<OrderDetailDTO> orders = orderRepository.getOrderDetails(customerId, orderId, orderDate, deliveryDate);
+        for (OrderDetailDTO order : orders) {
+            String status = getOrderStatus(order.getOrderId());
+            order.setStatus(status);
+        }
+        return orders;
     }
 
     @Override

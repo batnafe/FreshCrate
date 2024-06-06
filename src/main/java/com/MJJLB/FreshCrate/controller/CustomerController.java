@@ -5,6 +5,7 @@ import com.MJJLB.FreshCrate.service.CustomerService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class CustomerController {
 
     @PostMapping("/createCustomer")
     @Operation(summary = "Create a new customer")
-    public ResponseEntity<String> createCustomer(@Parameter(description = "Details of the customer to be created") @RequestBody (required = true) CustomerDTO customer) {
+    public ResponseEntity<String> createCustomer(@Parameter(description = "Details of the customer to be created") @RequestBody (required = true) @Valid CustomerDTO customer) {
         customerService.createCustomer(customer);
         return ResponseEntity.ok("Customer Created Successfully");
     }

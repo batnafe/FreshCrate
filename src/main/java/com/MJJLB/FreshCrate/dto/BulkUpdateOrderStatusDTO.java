@@ -1,9 +1,14 @@
 package com.MJJLB.FreshCrate.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 
 public class BulkUpdateOrderStatusDTO {
+    @NotEmpty(message = "List of orderIDs cannot be empty")
     private List<Integer> orderIds;
+    @NotNull(message = "Status ID cannot be null")
     private int statusId;
 
     public BulkUpdateOrderStatusDTO(List<Integer> orderIds, int statusId) {

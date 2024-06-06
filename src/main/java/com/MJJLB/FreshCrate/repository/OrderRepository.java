@@ -8,7 +8,6 @@ import java.util.List;
 public interface OrderRepository {
 
     List<OrderDetailDTO> getOrderDetails(Integer customerId,
-                                          String orderStatus,
                                           Integer orderId,
                                           LocalDateTime orderDate,
                                           LocalDateTime deliveryDate);

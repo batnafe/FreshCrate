@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface OrderService {
     List<OrderDetailDTO> getOrderDetails(Integer customerId,
-                                         String orderStatus,
                                          Integer orderId,
                                          LocalDateTime orderDate,
                                          LocalDateTime deliveryDate);

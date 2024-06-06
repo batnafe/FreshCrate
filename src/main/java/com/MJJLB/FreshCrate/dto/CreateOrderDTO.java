@@ -1,9 +1,14 @@
 package com.MJJLB.FreshCrate.dto;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+
 import java.util.List;
 
 public class CreateOrderDTO {
+    @NotNull(message = "Customer Id cannot be null")
     private Integer customerId;
+    @NotEmpty(message = "List of Order Items can not be empty")
     private List<OrderItemDTO> orderItems;
 
     public CreateOrderDTO(Integer customerId, List<OrderItemDTO> orderItems) {

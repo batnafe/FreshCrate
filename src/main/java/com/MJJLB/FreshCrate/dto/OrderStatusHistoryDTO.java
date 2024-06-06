@@ -1,9 +1,16 @@
 package com.MJJLB.FreshCrate.dto;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDateTime;
 
 public class OrderStatusHistoryDTO {
+    @NotBlank(message = "Order status cannot be blank")
+    @Size(max = 30, message = "Order status must be less than 30 characters")
     private String status;
+    @NotNull(message = "Change date cannot be null")
     private LocalDateTime changeDate;
 
     public OrderStatusHistoryDTO(String status, LocalDateTime changeDate) {

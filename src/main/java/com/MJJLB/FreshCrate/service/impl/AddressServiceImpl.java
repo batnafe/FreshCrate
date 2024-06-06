@@ -24,8 +24,8 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    public void updateAddress(Integer customerId, String street, String city, String zipCode, String stateId) {
-        addressRepository.updateAddress(customerId, street, city, zipCode, stateId);
+    public void updateAddress(Integer addressId, String street, String city, String zipCode, String stateId) {
+        addressRepository.updateAddress(addressId, street, city, zipCode, stateId);
     }
 
     @Override

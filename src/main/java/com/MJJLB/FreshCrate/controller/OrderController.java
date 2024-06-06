@@ -5,6 +5,8 @@ import com.MJJLB.FreshCrate.service.OrderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +17,7 @@ import java.util.List;
 @Tag(name = "Order Management", description = "APIs related to managing orders of customers")
 public class OrderController {
     private final OrderService orderService;
-
+    @Autowired
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
@@ -26,18 +28,17 @@ public class OrderController {
             "based on their current status and the specified date range.")
     public ResponseEntity<List<OrderDetailDTO>> getOrderDetails(
             @Parameter(description = "ID of the customer") @RequestParam(required = false) Integer customerId,
-            @Parameter(description = "Status of the order") @RequestParam(required = false) String orderStatus,
             @Parameter(description = "ID of the order") @RequestParam(required = false) Integer orderId,
             @Parameter(description = "Date the order was placed") @RequestParam(required = false) LocalDateTime orderDate,
             @Parameter(description = "Date the order was/is to be delivered") @RequestParam(required = false) LocalDateTime deliveryDate) {
 
-        return ResponseEntity.ok(orderService.getOrderDetails(customerId, orderStatus, orderId, orderDate, deliveryDate));
+        return ResponseEntity.ok(orderService.getOrderDetails(customerId, orderId, orderDate, deliveryDate));
     }
 
     @PostMapping("/createOrder")
     @Operation(summary = "Create a new order. This includes order items in the order")
     public ResponseEntity<String> createOrder(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Details of the order to be created")
-                                                  @RequestBody(required = true) CreateOrderDTO createOrderDTO) {
+                                                  @RequestBody(required = true) @Valid CreateOrderDTO createOrderDTO) {
         orderService.createOrder(createOrderDTO);
         return ResponseEntity.ok("Order created successfully");
     }
@@ -70,7 +71,7 @@ public class OrderController {
     @Operation(summary = "Update details of an item in an existing order. \n" +
             "This supports maintaining accurate order records and handling customer order change requests.")
     public ResponseEntity<String> updateOrderItem(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Details of the order item to be updated")
-                                                      @RequestBody(required = true) UpdateOrderItemDTO updateOrderItemDTO) {
+                                                      @RequestBody(required = true) @Valid UpdateOrderItemDTO updateOrderItemDTO) {
         orderService.updateOrderItem(updateOrderItemDTO);
         return ResponseEntity.ok("Order item updated successfully");
     }
@@ -134,7 +135,7 @@ public class OrderController {
     @Operation(summary = "Updates the status of single or multiple order(s). This handles bulk operations efficiently\n" +
             "when processing a large volume of orders at once.")
     public ResponseEntity<String> bulkUpdateOrderStatus(@io.swagger.v3.oas.annotations.parameters.RequestBody(description = "Details of the bulk update request. This includes ids of the orders and the status they need to be updated to")
-                                                            @RequestBody(required = true) BulkUpdateOrderStatusDTO bulkUpdateOrderStatusDTO) {
+                                                            @RequestBody(required = true) @Valid BulkUpdateOrderStatusDTO bulkUpdateOrderStatusDTO) {
         orderService.bulkUpdateOrderStatus(bulkUpdateOrderStatusDTO.getOrderIds(), bulkUpdateOrderStatusDTO.getStatusId());
         return ResponseEntity.ok("Order statuses updated successfully.");
     }

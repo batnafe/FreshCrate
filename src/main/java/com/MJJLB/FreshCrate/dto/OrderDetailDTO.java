@@ -1,25 +1,38 @@
 package com.MJJLB.FreshCrate.dto;
 
+import jakarta.validation.constraints.*;
+
 import java.time.LocalDateTime;
 
 public class OrderDetailDTO {
+    @NotBlank(message = "First name cannot be blank")
+    @Size(max = 30, message = "First name must be less than 30 characters")
     private String customerFirstName;
+    @NotBlank(message = "Last name cannot be blank")
+    @Size(max = 30, message = "Last name must be less than 30 characters")
     private String customerLastName;
+    @NotNull(message = "Order ID cannot be null")
     private Integer orderId;
-    private String orderStatus;
+    @NotBlank(message = "Order status cannot be blank")
+    @Size(max = 30, message = "Order status must be less than 30 characters")
+    private String status;
+    @NotNull(message = "Order date cannot be null")
+    @PastOrPresent(message = "Order date cannot be in the future")
     private LocalDateTime orderDate;
+    @NotNull(message = "Delivery date cannot be null")
+    @FutureOrPresent(message = "Delivery date cannot be in the past")
     private LocalDateTime deliveryDate;
 
     public OrderDetailDTO(String customerFirstName,
                           String customerLastName,
                           Integer orderId,
-                          String orderStatus,
+                          String status,
                           LocalDateTime orderDate,
                           LocalDateTime deliveryDate) {
         setCustomerFirstName(customerFirstName);
         setCustomerLastName(customerLastName);
         setOrderId(orderId);
-        setOrderStatus(orderStatus);
+        setStatus(status);
         setOrderDate(orderDate);
         setDeliveryDate(deliveryDate);
     }
@@ -47,12 +60,12 @@ public class OrderDetailDTO {
         this.orderId = orderId;
     }
 
-    public String getOrderStatus() {
-        return orderStatus;
+    public String getStatus() {
+        return status;
     }
 
-    public void setOrderStatus(String orderStatus) {
-        this.orderStatus = orderStatus;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public LocalDateTime getOrderDate() {

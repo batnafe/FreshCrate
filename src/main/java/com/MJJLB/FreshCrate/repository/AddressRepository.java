@@ -8,7 +8,7 @@ public interface AddressRepository {
 
     void createAddress(CustomerAddressDTO address);
 
-    void updateAddress(Integer customerId, String street, String city, String zipCode, String stateId);
+    void updateAddress(Integer addressId, String street, String city, String zipCode, String stateId);
 
     void deleteAddress(Integer customerId);
 

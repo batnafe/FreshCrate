@@ -26,30 +26,22 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
     @Override
     public List<OrderDetailDTO> getOrderDetails(Integer customerId,
-                                                 String orderStatus,
                                                  Integer orderId,
                                                  LocalDateTime orderDate,
                                                  LocalDateTime deliveryDate) {
         List<Object> params = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT customer.firstName, customer.lastName, orderItem.id AS order_id, " +
-                "orderStatus.status, customerOrder.orderDate, customerOrder.deliveryDate " +
+        StringBuilder sql = new StringBuilder("SELECT customer.firstName, customer.lastName, CustomerOrder.id AS order_id, " +
+                "customerOrder.orderDate, customerOrder.deliveryDate " +
                 "FROM customer " +
                 "JOIN CustomerOrder ON (customer.id = CustomerOrder.customerId) " +
-                "JOIN orderItem ON (CustomerOrder.id = orderItem.orderId) " +
-                "JOIN orderStatusHistory ON (CustomerOrder.id = orderStatusHistory.orderId) " +
-                "JOIN orderStatus ON (orderStatusHistory.statusId = orderStatus.id) " +
                 "WHERE 1=1 ");
 
         if (customerId != null) {
             sql.append(" AND customer.id = ? ");
             params.add(customerId);
         }
-        if (orderStatus != null) {
-            sql.append(" AND orderStatus.status = ? ");
-            params.add(orderStatus);
-        }
         if (orderId != null) {
-            sql.append(" AND orderItem.id = ? ");
+            sql.append(" AND CustomerOrder.id = ? ");
             params.add(orderId);
         }
         if (orderDate != null) {
@@ -60,11 +52,13 @@ public class OrderRepositoryImpl implements OrderRepository {
             sql.append(" AND customerOrder.deliveryDate = ? ");
             params.add(deliveryDate);
         }
+        sql.append("ORDER BY customerOrder.id");
+
         return jdbcTemplate.query(sql.toString(), params.toArray(), (rs, rowNum) -> new OrderDetailDTO(
                 rs.getString("firstname"),
                 rs.getString("lastname"),
                 rs.getInt("order_id"),
-                rs.getString("status"),
+                null,
                 rs.getObject("orderdate", LocalDateTime.class),
                 rs.getObject("deliverydate", LocalDateTime.class)
         ));
@@ -98,9 +92,12 @@ public class OrderRepositoryImpl implements OrderRepository {
 
     @Override
     public List<OrderItemDTO> getOrderItem(int orderId) {
-        String sql = "SELECT name, quantity FROM OrderItem WHERE orderId = ?";
+        String sql = "SELECT id, name, quantity FROM OrderItem WHERE orderId = ?";
         return jdbcTemplate.query(sql, new Object[]{orderId},
-                (rs, rowNum) -> new OrderItemDTO(rs.getString("name"), rs.getInt("quantity")));
+                (rs, rowNum) -> new OrderItemDTO(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getInt("quantity")));
     }
 
     @Override
@@ -184,7 +181,7 @@ public class OrderRepositoryImpl implements OrderRepository {
                 new OrderSummaryReportDTO(
                         rs.getString("firstName"),
                         rs.getString("lastName"),
-                        rs.getInt("id"),
+                        rs.getInt("orderid"),
                         rs.getInt("totalItemsOrdered")
                 )
         );
